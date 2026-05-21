@@ -33,21 +33,41 @@ async function preview() {
 
     // SLIDESHOW
     if (data.images && data.images.length > 1) {
-      box.innerHTML = `
-        <div class="previewCard">
-          <h3>${data.title}</h3>
-          <p>${data.author}</p>
 
-          <div style="display:flex; overflow-x:auto; gap:10px;">
-            ${data.images.map(img => `
-              <img src="${img}" style="width:200px; border-radius:10px;">
-            `).join("")}
+  box.innerHTML = `
+    <div class="previewCard">
+
+      <div class="slideHeader">
+        <h3>${data.title}</h3>
+        <p>${data.author}</p>
+      </div>
+
+      <div class="gallery">
+        ${data.images.map((img, index) => `
+          <div class="slideItem">
+
+            <img src="${img}" class="slideImage">
+
+            <a
+              href="${img}"
+              download="toksnap-image-${index + 1}.jpg"
+              target="_blank"
+              class="downloadImageBtn"
+            >
+              ⬇ Download
+            </a>
+
           </div>
+        `).join("")}
+      </div>
 
-          <p style="opacity:.6;">👉 Geser kanan kiri</p>
-        </div>
-      `;
-    }
+      <p class="slideHint">
+        👉 Swipe kiri kanan untuk melihat foto
+      </p>
+
+    </div>
+  `;
+}
 
     // VIDEO
     else {
