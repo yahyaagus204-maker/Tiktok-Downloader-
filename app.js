@@ -42,30 +42,48 @@ async function preview() {
         <p>${data.author}</p>
       </div>
 
-      <div class="gallery">
-        ${data.images.map((img, index) => `
-          <div class="slideItem">
+      <div class="galleryWrapper">
 
-            <img src="${img}" class="slideImage">
+        <div class="gallery" id="gallery">
 
-            <a
-              href="${img}"
-              download="toksnap-image-${index + 1}.jpg"
-              class="downloadImageBtn"
-            >
-              ⬇ Download
-            </a>
+          ${data.images.map((img, index) => `
 
-          </div>
+            <div class="slideItem">
+
+              <img
+                src="${img}"
+                class="slideImage"
+              >
+
+              <button
+                class="downloadImageBtn"
+                onclick="downloadImage('${img}', ${index})"
+              >
+                ⬇ Download HD
+              </button>
+
+            </div>
+
+          `).join("")}
+
+        </div>
+
+      </div>
+
+      <div class="dots">
+        ${data.images.map((_, i) => `
+          <div class="dot ${i === 0 ? 'activeDot' : ''}"></div>
         `).join("")}
       </div>
 
       <p class="slideHint">
-        👉 Swipe kiri kanan untuk melihat foto
+        👉 Swipe kiri kanan
       </p>
 
     </div>
   `;
+
+  initSlider();
 }
 
     // VIDEO
@@ -96,3 +114,57 @@ input.addEventListener("input", () => {
     }
   }, 800);
 });
+
+
+async function downloadImage(url, index) {
+
+  try {
+
+    const response = await fetch(url);
+
+    const blob = await response.blob();
+
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = blobUrl;
+
+    a.download = `toksnap-hd-${index + 1}.jpg`;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    window.URL.revokeObjectURL(blobUrl);
+
+  } catch (err) {
+
+    alert("Gagal download gambar");
+
+  }
+}
+
+function initSlider() {
+
+  const gallery = document.getElementById("gallery");
+
+  const dots = document.querySelectorAll(".dot");
+
+  gallery.addEventListener("scroll", () => {
+
+    const index = Math.round(
+      gallery.scrollLeft / gallery.offsetWidth
+    );
+
+    dots.forEach(dot => dot.classList.remove("activeDot"));
+
+    if (dots[index]) {
+      dots[index].classList.add("activeDot");
+    }
+
+  });
+
+}
