@@ -51,7 +51,6 @@ async function preview() {
             <a
               href="${img}"
               download="toksnap-image-${index + 1}.jpg"
-              target="_blank"
               class="downloadImageBtn"
             >
               ⬇ Download
