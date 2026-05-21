@@ -29,16 +29,18 @@ input.addEventListener("input", () => {
 // =======================
 // PREVIEW FUNCTION
 // =======================
-async function preview(url) {
+async function preview() {
+  const url = document.getElementById("url").value;
+  const box = document.getElementById("previewBox");
 
-  box.innerHTML = `
-    <div class="card" style="padding:20px; opacity:.7;">
-      ⚡ Loading preview...
-    </div>
-  `;
+  if (!url) {
+    box.innerHTML = "❌ Masukkan link dulu";
+    return;
+  }
+
+  box.innerHTML = `<div class="card">⚡ Loading...</div>`;
 
   try {
-
     const res = await fetch(`${BASE_URL}/info?url=${encodeURIComponent(url)}`);
     const data = await res.json();
 
@@ -47,38 +49,42 @@ async function preview(url) {
       return;
     }
 
-    // =========================
-    // SLIDESHOW MODE
-    // =========================
-    if (data.type === "slideshow") {
+    // SLIDESHOW HANDLER
+    if (data.images && data.images.length > 1) {
 
       box.innerHTML = `
-        <div class="previewCard">
-          <h3 style="padding:10px;">🖼️ Slideshow Detected</h3>
+        <div class="card">
+          <h3>${data.title}</h3>
+          <p>${data.author}</p>
 
-          <div class="slider" id="slider"></div>
+          <div id="slider" style="overflow-x:auto; display:flex; gap:10px; margin-top:10px;">
+            ${data.images.map(img => `
+              <img src="${img}" style="width:200px; border-radius:10px;">
+            `).join("")}
+          </div>
+
+          <p style="margin-top:10px; opacity:.7;">
+            👉 Geser kanan kiri untuk pilih gambar
+          </p>
         </div>
       `;
 
-      const slider = document.getElementById("slider");
+    } else {
 
-      data.images.forEach((img, i) => {
-
-        const item = document.createElement("div");
-        item.className = "slide-item";
-
-        item.innerHTML = `
-          <img src="${img}" />
-          <button onclick="downloadImage('${img}', ${i})">
-            ⬇ Download
-          </button>
-        `;
-
-        slider.appendChild(item);
-      });
-
-      return;
+      box.innerHTML = `
+        <div class="card">
+          <img src="${data.thumbnail}" style="width:100%; border-radius:10px;">
+          <h3>${data.title}</h3>
+          <p>${data.author}</p>
+        </div>
+      `;
     }
+
+  } catch (e) {
+    box.innerHTML = "❌ Preview gagal";
+  }
+}
+
 
     // =========================
     // VIDEO MODE (NORMAL TIKTOK)
