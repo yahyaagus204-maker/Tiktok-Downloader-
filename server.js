@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { exec } = require("child_process");
 const fs = require("fs");
-
+const fetch = require("node-fetch");
 const app = express();
 app.use(cors());
 
@@ -57,66 +57,130 @@ app.get("/audio", (req, res) => {
   });
 });
 
-app.get("/info", (req, res) => {
+app.get("/info", async (req, res) => {
+
   const url = req.query.url;
 
-  if (!url) return res.json({ error: "URL kosong" });
+  if (!url) {
+    return res.json({ error: "URL kosong" });
+  }
 
-  const cmd = `yt-dlp -J --no-playlist --user-agent "Mozilla/5.0" "${url}"`;
+  // =========================
+  // STEP 1: YT-DLP
+  // =========================
+  const runYtDlp = () => {
+    return new Promise((resolve, reject) => {
 
-  exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {
+      const cmd = `yt-dlp -J --no-playlist --user-agent "Mozilla/5.0" "${url}"`;
 
-    if (err) {
-      return res.json({
-        error: "Link tidak valid / tidak bisa diproses yt-dlp"
+      exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {
+
+        if (err) return reject(err);
+
+        try {
+          const data = JSON.parse(stdout);
+
+          let images = [];
+
+          if (data.images) images = data.images;
+
+          if (data.entries) {
+            images = data.entries.map(e => e.thumbnail || e.url);
+          }
+
+          resolve({
+            title: data.title,
+            author: data.uploader,
+            thumbnail: data.thumbnail,
+            images: images,
+            type: images.length > 1 ? "slideshow" : "video"
+          });
+
+        } catch (e) {
+          reject(e);
+        }
       });
+
+    });
+  };
+
+  // =========================
+  // STEP 1 TRY
+  // =========================
+  try {
+
+    const result = await runYtDlp();
+    return res.json(result);
+
+  } catch (err) {
+
+    console.log("YT-DLP gagal, coba API...");
+
+    // =========================
+    // STEP 2: API FALLBACK
+    // =========================
+    const apiResult = await getFromAPI(url);
+
+    if (apiResult) {
+      return res.json(apiResult);
     }
 
+    console.log("API juga gagal, retry YT-DLP...");
+
+    // =========================
+    // STEP 3: RETRY YT-DLP
+    // =========================
     try {
-      const data = JSON.parse(stdout);
+
+      const retry = await runYtDlp();
+      return res.json(retry);
+
+    } catch (err2) {
 
       // =========================
-      // DETEKSI VIDEO vs SLIDESHOW (FIXED)
+      // STEP 4: FINAL ERROR
       // =========================
-
-      let images = [];
-
-      // 🔥 CARA 1: slideshow TikTok modern
-      if (data?.entries && data.entries.length > 0) {
-        images = data.entries
-          .map(e => e.thumbnail || e.url || e.image)
-          .filter(Boolean);
-      }
-
-      // 🔥 CARA 2: format images langsung
-      if (data?.images && data.images.length > 0) {
-        images = data.images;
-      }
-
-      // 🔥 fallback: kadang thumbnail doang
-      if (images.length === 0 && data.thumbnail) {
-        images = [data.thumbnail];
-      }
-
-      const isSlideshow = images.length > 1;
-
       return res.json({
-        title: data.title || "No title",
-        author: data.uploader || "Unknown",
-        thumbnail: data.thumbnail || "",
-        duration: data.duration || 0,
-
-        type: isSlideshow ? "slideshow" : "video",
-        images: images
-      });
-
-    } catch (e) {
-      return res.json({
-        error: "Gagal parsing data TikTok"
+        error: "Semua engine gagal (yt-dlp + API blocked)"
       });
     }
-  });
+  }
 });
+
+
+
+async function getFromAPI(url) {
+  try {
+
+    const apiUrl = `https://tikwm.com/api/?url=${encodeURIComponent(url)}`;
+
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+
+    // kalau API gagal
+    if (!data || !data.data) {
+      return null;
+    }
+
+    return {
+      title: data.data.title || "No title",
+      author: data.data.author?.unique_id || "Unknown",
+      thumbnail: data.data.cover || "",
+
+      // 🖼️ slideshow support
+      images: data.data.images || [],
+
+      type: (data.data.images && data.data.images.length > 1)
+        ? "slideshow"
+        : "video"
+    };
+
+  } catch (err) {
+    console.log("API error:", err);
+    return null;
+  }
+}
+
 
 const PORT = process.env.PORT || 3000;
 
