@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TikTok Downloader</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg"></div>
+
+  <div class="app">
+
+    <!-- HEADER -->
+    <div class="topbar">
+      <h1>🎵 TikTok Saver</h1>
+      <p>Download MP4 & MP3 Instantly</p>
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="mainCard">
+
+      <input
+        type="text"
+        id="url"
+        placeholder="Paste TikTok link..."
+      >
+
+      <!-- PREVIEW -->
+      <div id="previewBox"></div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="actionButtons">
+
+        <button
+          type="button"
+          onclick="download('mp4')"
+          class="downloadBtn video"
+        >
+          🎬 Download Video
+        </button>
+
+        <button
+          type="button"
+          onclick="download('mp3')"
+          class="downloadBtn audio"
+        >
+          🎧 Download Audio
+        </button>
+
+      </div>
+
+      <div id="result"></div>
+
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
