@@ -139,6 +139,10 @@ button:hover{
   transform:scale(1.05);
 }
 
+.download-box button{
+  flex:1;
+}
+
 /* ======================
    SECTIONS TITLE
 ====================== */

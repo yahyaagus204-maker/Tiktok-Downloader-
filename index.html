@@ -35,9 +35,13 @@
     </p>
 
     <div class="download-box">
-      <input type="text" id="url" placeholder="Paste TikTok link here...">
-      <button onclick="download('mp4')">Download</button>
-    </div>
+  <input type="text" id="url" placeholder="Paste TikTok link here...">
+
+  <div style="display:flex; gap:10px; width:100%;">
+    <button onclick="download('mp4')">🎬 MP4 Video</button>
+    <button onclick="download('mp3')">🎵 MP3 Audio</button>
+  </div>
+</div>
 
     <div id="previewBox"></div>
     <div id="result"></div>
