@@ -67,26 +67,40 @@ app.get("/info", (req, res) => {
   exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {
 
     if (err) {
-      return res.json({ error: "Link tidak valid atau tidak support" });
+      return res.json({
+        error: "Link tidak valid / tidak bisa diproses yt-dlp"
+      });
     }
 
     try {
       const data = JSON.parse(stdout);
 
-      // ===== DETEKSI SLIDESHOW =====
+      // =========================
+      // DETEKSI VIDEO vs SLIDESHOW (FIXED)
+      // =========================
+
       let images = [];
 
-      if (data.images) {
+      // 🔥 CARA 1: slideshow TikTok modern
+      if (data?.entries && data.entries.length > 0) {
+        images = data.entries
+          .map(e => e.thumbnail || e.url || e.image)
+          .filter(Boolean);
+      }
+
+      // 🔥 CARA 2: format images langsung
+      if (data?.images && data.images.length > 0) {
         images = data.images;
       }
 
-      if (data.entries) {
-        images = data.entries.map(e => e.thumbnail || e.url);
+      // 🔥 fallback: kadang thumbnail doang
+      if (images.length === 0 && data.thumbnail) {
+        images = [data.thumbnail];
       }
 
       const isSlideshow = images.length > 1;
 
-      res.json({
+      return res.json({
         title: data.title || "No title",
         author: data.uploader || "Unknown",
         thumbnail: data.thumbnail || "",
@@ -97,7 +111,9 @@ app.get("/info", (req, res) => {
       });
 
     } catch (e) {
-      res.json({ error: "Parse error" });
+      return res.json({
+        error: "Gagal parsing data TikTok"
+      });
     }
   });
 });
