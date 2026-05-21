@@ -1,97 +1,86 @@
 const BASE_URL = "https://web-production-1dbae.up.railway.app";
 
-async function download(type) {
-  const url = document.getElementById("url").value;
-  const result = document.getElementById("result");
+const input = document.getElementById("url");
+const box = document.getElementById("previewBox");
+const result = document.getElementById("result");
+
+let timeout;
+
+// =======================
+// AUTO PREVIEW (ANTI SPAM)
+// =======================
+input.addEventListener("input", () => {
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+    const url = input.value.trim();
+
+    if (!url) {
+      box.innerHTML = "";
+      return;
+    }
+
+    if (!url.includes("tiktok")) return;
+
+    preview(url);
+  }, 700);
+});
+
+// =======================
+// PREVIEW FUNCTION
+// =======================
+async function preview(url) {
+
+  box.innerHTML = `
+    <div class="card" style="padding:20px; opacity:.7;">
+      ⚡ Loading preview...
+    </div>
+  `;
+
+  try {
+    const res = await fetch(`${BASE_URL}/info?url=${encodeURIComponent(url)}`);
+    const data = await res.json();
+
+    if (data.error) {
+      box.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
+      return;
+    }
+
+    box.innerHTML = `
+      <div class="card" style="margin-top:20px; overflow:hidden;">
+        <img src="${data.thumbnail}" style="width:100%; border-radius:12px;">
+
+        <div style="padding:15px; text-align:left;">
+          <h3 style="font-size:16px;">${data.title}</h3>
+          <p style="opacity:.7; margin-top:5px;">👤 ${data.author}</p>
+          <p style="opacity:.7;">⏱ ${data.duration}s</p>
+        </div>
+      </div>
+    `;
+
+  } catch (err) {
+    box.innerHTML = `<p style="color:red;">❌ Preview gagal</p>`;
+  }
+}
+
+// =======================
+// DOWNLOAD FUNCTION
+// =======================
+function download(type) {
+
+  const url = input.value.trim();
 
   if (!url) {
     result.innerHTML = "❌ Masukkan link dulu";
     return;
   }
 
-  result.innerHTML = "⚡ Processing...";
-
   const endpoint =
     type === "mp4"
       ? `${BASE_URL}/download`
       : `${BASE_URL}/audio`;
 
-  window.location.href =
-    `${endpoint}?url=${encodeURIComponent(url)}`;
+  result.innerHTML = "⚡ Processing download...";
+
+  window.location.href = `${endpoint}?url=${encodeURIComponent(url)}`;
 }
-
-
-// PREVIEW
-async function preview() {
-
-  const url = document.getElementById("url").value;
-  const box = document.getElementById("previewBox");
-
-  if (!url) {
-    box.innerHTML = "❌ Masukkan link dulu";
-    return;
-  }
-
-  box.innerHTML = `
-  <div class="previewCard">
-    <div style="padding:30px">
-      ⚡ Fetching TikTok preview...
-    </div>
-  </div>
-`;
-
-  try {
-
-    const res = await fetch(
-      `${BASE_URL}/info?url=${encodeURIComponent(url)}`
-    );
-
-    const data = await res.json();
-
-    if (data.error) {
-      box.innerHTML = `❌ ${data.error}`;
-      return;
-    }
-
-    box.innerHTML = `
-      <div class="previewCard">
-        <img src="${data.thumbnail}" class="thumb">
-
-        <h3>${data.title}</h3>
-
-        <p class="meta">👤 ${data.author}</p>
-
-        <p class="meta">⏱ ${data.duration}s</p>
-      </div>
-    `;
-    
-    box.scrollIntoView({
-  behavior: "smooth"
-});
-
-  } catch (e) {
-
-    console.log(e);
-
-    box.innerHTML = "❌ Preview gagal";
-  }
-}
-
-const input = document.getElementById("url");
-
-let previewTimeout;
-
-input.addEventListener("input", () => {
-
-  clearTimeout(previewTimeout);
-
-  // delay sedikit biar tidak spam request
-  previewTimeout = setTimeout(() => {
-
-    if (input.value.includes("tiktok")) {
-      preview();
-    }
-
-  }, 800);
-
-});

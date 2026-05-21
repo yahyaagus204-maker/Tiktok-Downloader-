@@ -1,219 +1,282 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
 }
 
-body {
-
-  font-family: Arial, sans-serif;
-
-  background: #0a0a0a;
-
-  color: white;
-
-  min-height: 100vh;
-
-  overflow-x: hidden;
+body{
+  background:#070b14;
+  color:white;
+  overflow-x:hidden;
 }
 
-/* glow background */
-.bg {
-  position: fixed;
-  width: 100%;
-  height: 100%;
+/* ======================
+   GLOW BACKGROUND
+====================== */
 
-  background:
-    radial-gradient(circle at top, #ff0050 0%, transparent 30%),
-    radial-gradient(circle at bottom, #00f2ea 0%, transparent 30%);
-
-  filter: blur(100px);
-
-  opacity: 0.25;
-
-  z-index: -1;
+.bg-glow{
+  position:fixed;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  filter:blur(120px);
+  opacity:.35;
+  z-index:-1;
 }
 
-/* layout */
-.app {
-  width: 100%;
-  max-width: 500px;
-  margin: auto;
-  padding: 20px;
+.glow1{
+  background:#ff0050;
+  top:-150px;
+  left:-150px;
 }
 
-/* top */
-.topbar {
-  text-align: center;
-  margin-top: 30px;
-  margin-bottom: 25px;
+.glow2{
+  background:#00f2ea;
+  bottom:-150px;
+  right:-150px;
 }
 
-.topbar h1 {
-  font-size: 28px;
+/* ======================
+   NAVBAR
+====================== */
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 8%;
 }
 
-.topbar p {
-  opacity: 0.6;
-  margin-top: 6px;
+.logo{
+  font-size:28px;
+  font-weight:700;
+  background:linear-gradient(90deg,#00f2ea,#ff0050);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-/* card */
-.mainCard {
-
-  background: rgba(255,255,255,0.05);
-
-  backdrop-filter: blur(20px);
-
-  border-radius: 24px;
-
-  padding: 20px;
-
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+.nav-btn{
+  padding:10px 16px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,#ff0050,#00f2ea);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
 }
 
-/* input */
-input {
-
-  width: 100%;
-
-  padding: 15px;
-
-  border-radius: 14px;
-
-  border: none;
-
-  outline: none;
-
-  background: rgba(255,255,255,0.08);
-
-  color: white;
-
-  font-size: 15px;
+.nav-btn:hover{
+  transform:scale(1.05);
 }
 
-/* preview button */
-.previewBtn {
+/* ======================
+   HERO
+====================== */
 
-  width: 100%;
-
-  margin-top: 12px;
-
-  padding: 14px;
-
-  border: none;
-
-  border-radius: 14px;
-
-  background: linear-gradient(90deg, #6c5ce7, #8e44ad);
-
-  color: white;
-
-  font-weight: bold;
-
-  cursor: pointer;
+.hero{
+  min-height:70vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:40px 20px;
 }
 
-/* preview card */
-.previewCard {
-
-  margin-top: 20px;
-
-  background: rgba(255,255,255,0.05);
-
-  border-radius: 18px;
-
-  overflow: hidden;
-
-  animation: fade 0.3s ease;
+.hero h1{
+  font-size:52px;
+  max-width:800px;
 }
 
-/* image */
-.thumb {
-
-  width: 100%;
-
-  max-height: 400px;
-
-  object-fit: cover;
+.hero span{
+  color:#00f2ea;
 }
 
-/* info */
-.info {
-  padding: 15px;
+.hero p{
+  opacity:.7;
+  margin-top:15px;
+  margin-bottom:30px;
+  max-width:600px;
 }
 
-.info h3 {
-  font-size: 16px;
-  margin-bottom: 10px;
+/* ======================
+   INPUT BOX
+====================== */
+
+.download-box{
+  display:flex;
+  gap:10px;
+  width:100%;
+  max-width:600px;
+  margin-bottom:20px;
 }
 
-.meta {
-
-  opacity: 0.7;
-
-  font-size: 13px;
-
-  margin-top: 4px;
+input{
+  flex:1;
+  padding:15px;
+  border-radius:12px;
+  border:none;
+  outline:none;
+  background:rgba(255,255,255,.08);
+  color:white;
+  font-size:14px;
 }
 
-/* buttons */
-.actionButtons {
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 10px;
-
-  margin-top: 20px;
+button{
+  padding:15px 20px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(90deg,#ff0050,#00f2ea);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.2s;
 }
 
-.downloadBtn {
-
-  padding: 15px;
-
-  border: none;
-
-  border-radius: 14px;
-
-  color: white;
-
-  font-weight: bold;
-
-  cursor: pointer;
-
-  transition: 0.2s;
+button:hover{
+  transform:scale(1.05);
 }
 
-.downloadBtn:hover {
-  transform: scale(1.02);
+/* ======================
+   SECTIONS TITLE
+====================== */
+
+.section-title{
+  text-align:center;
+  font-size:32px;
+  margin-bottom:40px;
 }
 
-.video {
-  background: linear-gradient(90deg, #ff0050, #ff4d6d);
+/* ======================
+   FEATURES
+====================== */
+
+.features{
+  padding:80px 8%;
 }
 
-.audio {
-  background: linear-gradient(90deg, #00c896, #00f2ea);
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
 }
 
-/* result */
-#result {
-  margin-top: 15px;
-  text-align: center;
+.card{
+  background:rgba(255,255,255,.06);
+  padding:25px;
+  border-radius:16px;
+  transition:.3s;
+  border:1px solid rgba(255,255,255,.08);
 }
 
-/* animation */
-@keyframes fade {
+.card:hover{
+  transform:translateY(-8px);
+  background:rgba(255,255,255,.1);
+}
 
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+.icon{
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+.card h3{
+  margin-bottom:10px;
+}
+
+.card p{
+  opacity:.7;
+  font-size:14px;
+}
+
+/* ======================
+   HOW IT WORKS
+====================== */
+
+.how{
+  padding:80px 8%;
+}
+
+.steps{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+.step{
+  background:rgba(255,255,255,.06);
+  padding:25px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.08);
+  text-align:center;
+  transition:.3s;
+}
+
+.step:hover{
+  transform:translateY(-6px);
+}
+
+.step-number{
+  width:40px;
+  height:40px;
+  margin:0 auto 15px;
+  border-radius:50%;
+  background:linear-gradient(90deg,#ff0050,#00f2ea);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+/* ======================
+   STATS
+====================== */
+
+.stats{
+  padding:80px 8%;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:20px;
+  text-align:center;
+}
+
+.stat h2{
+  font-size:28px;
+  color:#00f2ea;
+}
+
+.stat p{
+  opacity:.7;
+}
+
+/* ======================
+   FOOTER
+====================== */
+
+footer{
+  text-align:center;
+  padding:30px;
+  opacity:.6;
+  font-size:14px;
+  border-top:1px solid rgba(255,255,255,.1);
+  margin-top:50px;
+}
+
+/* ======================
+   RESPONSIVE
+====================== */
+
+@media(max-width:768px){
+  .hero h1{
+    font-size:34px;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  nav{
+    padding:15px 5%;
+  }
+
+  .download-box{
+    flex-direction:column;
   }
 }

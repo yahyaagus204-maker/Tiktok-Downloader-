@@ -1,62 +1,154 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>TikTok Downloader</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TokSnap - TikTok Downloader</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <div class="bg"></div>
+  <div class="bg-glow glow1"></div>
+  <div class="bg-glow glow2"></div>
 
-  <div class="app">
+  <!-- NAVBAR -->
+  <nav>
+    <div class="logo">TokSnap</div>
+    <button class="nav-btn">Download App</button>
+  </nav>
 
-    <!-- HEADER -->
-    <div class="topbar">
-      <h1>🎵 TikTok Saver</h1>
-      <p>Download MP4 & MP3 Instantly</p>
+  <!-- HERO -->
+  <section class="hero">
+
+    <h1>
+      Download TikTok Videos &
+      <span>MP3 Instantly</span>
+    </h1>
+
+    <p>
+      Fast, clean, watermark-free TikTok downloader with premium UI experience.
+    </p>
+
+    <div class="download-box">
+      <input type="text" id="url" placeholder="Paste TikTok link here...">
+      <button onclick="download('mp4')">Download</button>
     </div>
 
-    <!-- MAIN CARD -->
-    <div class="mainCard">
+    <div id="previewBox"></div>
+    <div id="result"></div>
 
-      <input
-        type="text"
-        id="url"
-        placeholder="Paste TikTok link..."
-      >
+  </section>
 
-      <!-- PREVIEW -->
-      <div id="previewBox"></div>
+  <!-- FEATURES -->
+  <section class="features">
 
-      <!-- ACTION BUTTONS -->
-      <div class="actionButtons">
+    <h2 class="section-title">Why Choose TokSnap?</h2>
 
-        <button
-          type="button"
-          onclick="download('mp4')"
-          class="downloadBtn video"
-        >
-          🎬 Download Video
-        </button>
+    <div class="cards">
 
-        <button
-          type="button"
-          onclick="download('mp3')"
-          class="downloadBtn audio"
-        >
-          🎧 Download Audio
-        </button>
-
+      <div class="card">
+        <div class="icon">📥</div>
+        <h3>No Watermark</h3>
+        <p>Download TikTok videos in HD quality without watermark.</p>
       </div>
 
-      <div id="result"></div>
+      <div class="card">
+        <div class="icon">🎵</div>
+        <h3>MP3 Converter</h3>
+        <p>Convert TikTok videos into high quality MP3 instantly.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">⚡</div>
+        <h3>Ultra Fast</h3>
+        <p>Powered by Railway cloud backend.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">📱</div>
+        <h3>Mobile Friendly</h3>
+        <p>Optimized for all devices.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">☁️</div>
+        <h3>Cloud Powered</h3>
+        <p>24/7 online API service.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">🔒</div>
+        <h3>Private & Safe</h3>
+        <p>No login required.</p>
+      </div>
 
     </div>
 
-  </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+
+    <h2 class="section-title">How It Works</h2>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Paste Link</h3>
+        <p>Copy TikTok URL and paste it.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Preview Video</h3>
+        <p>Instant preview thumbnail & info.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Download</h3>
+        <p>Get MP4 or MP3 instantly.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+
+    <div class="stat">
+      <h2>10K+</h2>
+      <p>Downloads</p>
+    </div>
+
+    <div class="stat">
+      <h2>99.9%</h2>
+      <p>Uptime</p>
+    </div>
+
+    <div class="stat">
+      <h2>HD</h2>
+      <p>Quality</p>
+    </div>
+
+    <div class="stat">
+      <h2>24/7</h2>
+      <p>Online</p>
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 TokSnap — TikTok Downloader SaaS
+  </footer>
 
   <script src="app.js"></script>
 </body>
