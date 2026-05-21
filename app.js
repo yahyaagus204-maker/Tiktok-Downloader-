@@ -1,4 +1,4 @@
-const BASE_URL = "https://telescope-expenditures-appeals-several.trycloudflare.com";
+const BASE_URL = "https://web-production-1dbae.up.railway.app/";
 
 async function download(type) {
   const url = document.getElementById("url").value;
