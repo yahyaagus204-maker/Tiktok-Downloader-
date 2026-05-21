@@ -3,17 +3,22 @@ const BASE_URL = "https://web-production-1dbae.up.railway.app";
 // DOWNLOAD
 function download(type) {
   const url = document.getElementById("url").value;
-  const result = document.getElementById("result");
 
   if (!url) {
-    result.innerHTML = "❌ Masukkan link dulu";
+    alert("Masukkan link dulu");
     return;
   }
 
-  result.innerHTML = "⚡ Processing...";
-
+  // langsung redirect ke backend
   window.location.href =
     `${BASE_URL}/download?url=${encodeURIComponent(url)}`;
+}
+
+function downloadAudio() {
+  const url = document.getElementById("url").value;
+
+  window.location.href =
+    `${BASE_URL}/download?url=${encodeURIComponent(url)}&type=mp3`;
 }
 
 // PREVIEW

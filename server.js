@@ -45,6 +45,44 @@ app.get("/info", async (req, res) => {
   }
 });
 
+
+app.get("/download", async (req, res) => {
+  const url = req.query.url;
+
+  if (!url) {
+    return res.json({ error: "URL kosong" });
+  }
+
+  try {
+    // 1. ambil dari TikWM dulu
+    const api = await fetch(
+      `https://tikwm.com/api/?url=${encodeURIComponent(url)}`
+    );
+
+    const data = await api.json();
+
+    if (data?.data?.play) {
+      // redirect langsung ke file video (PALING STABIL)
+      return res.redirect(data.data.play);
+    }
+
+    // 2. fallback jika tidak ada
+    if (data?.data?.hdplay) {
+      return res.redirect(data.data.hdplay);
+    }
+
+    return res.json({
+      error: "Download tidak tersedia"
+    });
+
+  } catch (err) {
+    return res.json({
+      error: "Server error"
+    });
+  }
+});
+
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
