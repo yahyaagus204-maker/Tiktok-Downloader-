@@ -60,40 +60,44 @@ app.get("/audio", (req, res) => {
 app.get("/info", (req, res) => {
   const url = req.query.url;
 
-  if (!url) {
-    return res.json({ error: "URL kosong" });
-  }
+  if (!url) return res.json({ error: "URL kosong" });
 
-  const cmd =
-    `yt-dlp -J --no-playlist --user-agent "Mozilla/5.0" "${url}"`;
+  const cmd = `yt-dlp -J --no-playlist --user-agent "Mozilla/5.0" "${url}"`;
 
   exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {
 
     if (err) {
-      console.log(err);
-
-      return res.json({
-        error: "Gagal ambil preview"
-      });
+      return res.json({ error: "Link tidak valid atau tidak support" });
     }
 
     try {
       const data = JSON.parse(stdout);
 
+      // ===== DETEKSI SLIDESHOW =====
+      let images = [];
+
+      if (data.images) {
+        images = data.images;
+      }
+
+      if (data.entries) {
+        images = data.entries.map(e => e.thumbnail || e.url);
+      }
+
+      const isSlideshow = images.length > 1;
+
       res.json({
         title: data.title || "No title",
-        thumbnail: data.thumbnail || "",
         author: data.uploader || "Unknown",
-        duration: data.duration || 0
+        thumbnail: data.thumbnail || "",
+        duration: data.duration || 0,
+
+        type: isSlideshow ? "slideshow" : "video",
+        images: images
       });
 
     } catch (e) {
-
-      console.log(e);
-
-      res.json({
-        error: "Parse error"
-      });
+      res.json({ error: "Parse error" });
     }
   });
 });

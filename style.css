@@ -284,3 +284,35 @@ footer{
     flex-direction:column;
   }
 }
+
+
+.slider{
+  display:flex;
+  overflow-x:auto;
+  gap:15px;
+  padding:15px;
+  scroll-snap-type:x mandatory;
+}
+
+.slide-item{
+  min-width:250px;
+  flex-shrink:0;
+  background:rgba(255,255,255,0.06);
+  border-radius:15px;
+  overflow:hidden;
+  scroll-snap-align:center;
+}
+
+.slide-item img{
+  width:100%;
+  height:300px;
+  object-fit:cover;
+}
+
+.slide-item button{
+  width:100%;
+  border:none;
+  padding:10px;
+  background:linear-gradient(90deg,#ff0050,#00f2ea);
+  color:white;
+}

@@ -38,6 +38,7 @@ async function preview(url) {
   `;
 
   try {
+
     const res = await fetch(`${BASE_URL}/info?url=${encodeURIComponent(url)}`);
     const data = await res.json();
 
@@ -46,19 +47,59 @@ async function preview(url) {
       return;
     }
 
+    // =========================
+    // SLIDESHOW MODE
+    // =========================
+    if (data.type === "slideshow") {
+
+      box.innerHTML = `
+        <div class="previewCard">
+          <h3 style="padding:10px;">🖼️ Slideshow Detected</h3>
+
+          <div class="slider" id="slider"></div>
+        </div>
+      `;
+
+      const slider = document.getElementById("slider");
+
+      data.images.forEach((img, i) => {
+
+        const item = document.createElement("div");
+        item.className = "slide-item";
+
+        item.innerHTML = `
+          <img src="${img}" />
+          <button onclick="downloadImage('${img}', ${i})">
+            ⬇ Download
+          </button>
+        `;
+
+        slider.appendChild(item);
+      });
+
+      return;
+    }
+
+    // =========================
+    // VIDEO MODE (NORMAL TIKTOK)
+    // =========================
     box.innerHTML = `
-      <div class="card" style="margin-top:20px; overflow:hidden;">
-        <img src="${data.thumbnail}" style="width:100%; border-radius:12px;">
+      <div class="previewCard">
+
+        <img src="${data.thumbnail}" class="thumb" />
 
         <div style="padding:15px; text-align:left;">
           <h3 style="font-size:16px;">${data.title}</h3>
-          <p style="opacity:.7; margin-top:5px;">👤 ${data.author}</p>
-          <p style="opacity:.7;">⏱ ${data.duration}s</p>
+
+          <p class="meta">👤 ${data.author}</p>
+          <p class="meta">⏱ ${data.duration}s</p>
         </div>
+
       </div>
     `;
 
   } catch (err) {
+    console.log(err);
     box.innerHTML = `<p style="color:red;">❌ Preview gagal</p>`;
   }
 }
@@ -83,4 +124,12 @@ function download(type) {
   result.innerHTML = "⚡ Processing download...";
 
   window.location.href = `${endpoint}?url=${encodeURIComponent(url)}`;
+}
+
+
+function downloadImage(url, i){
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `toksnap_${i}.jpg`;
+  a.click();
 }
