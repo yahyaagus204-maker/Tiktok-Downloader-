@@ -4,21 +4,10 @@ const BASE_URL = "https://web-production-1dbae.up.railway.app";
 function download(type) {
   const url = document.getElementById("url").value;
 
-  if (!url) {
-    alert("Masukkan link dulu");
-    return;
-  }
-
-  // langsung redirect ke backend
-  window.location.href =
-    `${BASE_URL}/download?url=${encodeURIComponent(url)}`;
-}
-
-function downloadAudio() {
-  const url = document.getElementById("url").value;
+  if (!url) return alert("Masukkan link dulu");
 
   window.location.href =
-    `${BASE_URL}/download?url=${encodeURIComponent(url)}&type=mp3`;
+    `${BASE_URL}/download?url=${encodeURIComponent(url)}&type=${type}`;
 }
 
 // PREVIEW

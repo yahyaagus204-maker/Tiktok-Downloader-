@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const { exec } = require("child_process");
+const fs = require("fs");
 
 const app = express();
 app.use(cors());
@@ -11,75 +13,61 @@ app.get("/", (req, res) => {
 app.get("/info", async (req, res) => {
   const url = req.query.url;
 
-  if (!url) {
-    return res.status(400).json({ error: "URL kosong" });
-  }
+  if (!url) return res.json({ error: "URL kosong" });
 
   try {
-    const fetchRes = await fetch(
+    const response = await fetch(
       `https://tikwm.com/api/?url=${encodeURIComponent(url)}`
     );
 
-    const data = await fetchRes.json();
+    const data = await response.json();
 
-    if (!data || !data.data) {
-      return res.status(500).json({
-        error: "TikTok API gagal / diblok"
-      });
+    if (!data?.data) {
+      return res.json({ error: "Gagal ambil data TikTok" });
     }
 
-    return res.json({
-      title: data.data.title || "No title",
-      author: data.data.author?.unique_id || "Unknown",
-      thumbnail: data.data.cover || "",
+    res.json({
+      title: data.data.title,
+      author: data.data.author?.unique_id,
+      thumbnail: data.data.cover,
       images: data.data.images || [],
-      duration: data.data.duration || 0
+      isSlideshow: data.data.images?.length > 0
     });
 
   } catch (err) {
-    console.log(err);
-
-    return res.status(500).json({
-      error: "Server crash / fetch gagal"
-    });
+    res.json({ error: "Server error" });
   }
 });
 
 
-app.get("/download", async (req, res) => {
+app.get("/download", (req, res) => {
   const url = req.query.url;
+  const type = req.query.type || "mp4";
 
-  if (!url) {
-    return res.json({ error: "URL kosong" });
+  if (!url) return res.json({ error: "URL kosong" });
+
+  const fileName =
+    type === "mp3"
+      ? `audio_${Date.now()}.mp3`
+      : `video_${Date.now()}.mp4`;
+
+  let cmd;
+
+  if (type === "mp3") {
+    cmd = `yt-dlp -x --audio-format mp3 -o "${fileName}" "${url}"`;
+  } else {
+    cmd = `yt-dlp -f "best[ext=mp4]" -o "${fileName}" "${url}"`;
   }
 
-  try {
-    // 1. ambil dari TikWM dulu
-    const api = await fetch(
-      `https://tikwm.com/api/?url=${encodeURIComponent(url)}`
-    );
-
-    const data = await api.json();
-
-    if (data?.data?.play) {
-      // redirect langsung ke file video (PALING STABIL)
-      return res.redirect(data.data.play);
+  exec(cmd, (err) => {
+    if (err) {
+      return res.json({ error: "Download gagal (yt-dlp error)" });
     }
 
-    // 2. fallback jika tidak ada
-    if (data?.data?.hdplay) {
-      return res.redirect(data.data.hdplay);
-    }
-
-    return res.json({
-      error: "Download tidak tersedia"
+    res.download(fileName, () => {
+      fs.unlinkSync(fileName);
     });
-
-  } catch (err) {
-    return res.json({
-      error: "Server error"
-    });
-  }
+  });
 });
 
 
