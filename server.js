@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const { exec } = require("child_process");
 const fs = require("fs");
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 app.use(cors());
