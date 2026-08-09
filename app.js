@@ -1,3 +1,5 @@
+alert("TOKSNAP APP.JS AKTIF");
+
 const BASE_URL = "https://web-production-1dbae.up.railway.app";
 
 // DOWNLOAD
