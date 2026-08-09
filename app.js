@@ -301,3 +301,10 @@ window.addEventListener("appinstalled", () => {
   }
 
 });
+
+
+if (installAppBtn) {
+    installAppBtn.addEventListener("click", () => {
+        alert("APP.JS TERHUBUNG!");
+    });
+}
