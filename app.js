@@ -264,23 +264,21 @@ window.addEventListener("pageshow", () => {
 // INSTALL PWA
 // ==========================================
 
-let deferredPrompt;
+let deferredPrompt = null;
 const installAppBtn = document.getElementById("installAppBtn");
 
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
 
-  if (installAppBtn) {
-    installAppBtn.style.display = "block";
-  }
+  console.log("PWA siap di-install");
 });
 
 if (installAppBtn) {
   installAppBtn.addEventListener("click", async () => {
 
     if (!deferredPrompt) {
-      alert("TokSnap sudah terpasang atau belum tersedia untuk di-install.");
+      alert("TokSnap sudah terpasang atau instalasi belum tersedia.");
       return;
     }
 
@@ -288,16 +286,18 @@ if (installAppBtn) {
 
     const { outcome } = await deferredPrompt.userChoice;
 
-    console.log("Install result:", outcome);
+    console.log("Hasil install:", outcome);
 
     deferredPrompt = null;
   });
 }
 
 window.addEventListener("appinstalled", () => {
+
   deferredPrompt = null;
 
   if (installAppBtn) {
     installAppBtn.textContent = "✓ TokSnap Terpasang";
   }
+
 });
