@@ -34,31 +34,40 @@ async function preview() {
       return;
     }
 
-    // ==========================================
-    // 1 FOTO
-    // ==========================================
-    if (data.images && data.images.length === 1) {
+// ==========================================
+// 1 FOTO
+// ==========================================
+if (data.images && data.images.length === 1) {
 
-      box.innerHTML = `
-        <div class="previewCard">
+  box.innerHTML = `
+    <div class="previewCard">
 
-          <div class="slideHeader">
-            <h3>${data.title}</h3>
-            <p>${data.author}</p>
-          </div>
+      <div class="slideHeader">
+        <h3>${data.title}</h3>
+        <p>${data.author}</p>
+      </div>
 
-          <div class="singleImageWrapper">
-            <img
-              src="${data.images[0]}"
-              class="singleImage"
-            >
-          </div>
+      <div class="slideItem">
 
-        </div>
-      `;
+        <img
+          src="${data.images[0]}"
+          class="slideImage"
+        >
 
-      return;
-    }
+        <button
+          class="downloadImageBtn"
+          onclick="downloadImage('${data.images[0]}', 0)"
+        >
+          ⬇ Download HD
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+  return;
+}
 
 
     // ==========================================
@@ -236,3 +245,16 @@ function initSlider() {
   });
 
               }
+
+
+  // ==========================================
+// RESET INPUT SAAT APLIKASI/WEB DIBUKA
+// ==========================================
+
+window.addEventListener("pageshow", () => {
+  const input = document.getElementById("url");
+  const box = document.getElementById("previewBox");
+
+  if (input) input.value = "";
+  if (box) box.innerHTML = "";
+});
