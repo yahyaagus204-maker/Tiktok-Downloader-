@@ -252,11 +252,13 @@ function initSlider() {
 // ==========================================
 
 window.addEventListener("pageshow", () => {
+
   const input = document.getElementById("url");
   const box = document.getElementById("previewBox");
 
   if (input) input.value = "";
   if (box) box.innerHTML = "";
+
 });
 
 
@@ -265,46 +267,80 @@ window.addEventListener("pageshow", () => {
 // ==========================================
 
 let deferredPrompt = null;
-const installAppBtn = document.getElementById("installAppBtn");
 
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
+window.addEventListener("beforeinstallprompt", (event) => {
 
-  console.log("PWA siap di-install");
+  event.preventDefault();
+
+  deferredPrompt = event;
+
+  console.log("TokSnap: PWA siap di-install");
+
 });
 
-if (installAppBtn) {
+
+// ==========================================
+// TOMBOL DOWNLOAD APP
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const installAppBtn = document.getElementById("installAppBtn");
+
+  if (!installAppBtn) {
+    console.error("Tombol installAppBtn tidak ditemukan!");
+    return;
+  }
+
   installAppBtn.addEventListener("click", async () => {
 
-    if (!deferredPrompt) {
-      alert("TokSnap sudah terpasang atau instalasi belum tersedia.");
+    // PWA siap di-install
+    if (deferredPrompt) {
+
+      deferredPrompt.prompt();
+
+      const result = await deferredPrompt.userChoice;
+
+      console.log("Hasil instalasi:", result.outcome);
+
+      deferredPrompt = null;
+
       return;
     }
 
-    deferredPrompt.prompt();
+    // Sudah dibuka sebagai aplikasi PWA
+    if (window.matchMedia("(display-mode: standalone)").matches) {
 
-    const { outcome } = await deferredPrompt.userChoice;
+      alert("TokSnap sudah terpasang di perangkat ini.");
 
-    console.log("Hasil install:", outcome);
+      return;
+    }
 
-    deferredPrompt = null;
+    // Prompt belum tersedia
+    alert(
+      "Instalasi TokSnap belum tersedia.\n\n" +
+      "Coba refresh halaman terlebih dahulu."
+    );
+
   });
-}
+
+});
+
+
+// ==========================================
+// PWA BERHASIL DI-INSTALL
+// ==========================================
 
 window.addEventListener("appinstalled", () => {
 
   deferredPrompt = null;
 
+  const installAppBtn = document.getElementById("installAppBtn");
+
   if (installAppBtn) {
     installAppBtn.textContent = "✓ TokSnap Terpasang";
   }
 
+  console.log("TokSnap berhasil di-install!");
+
 });
-
-
-if (installAppBtn) {
-    installAppBtn.addEventListener("click", () => {
-        alert("APP.JS TERHUBUNG!");
-    });
-}
