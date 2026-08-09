@@ -258,3 +258,46 @@ window.addEventListener("pageshow", () => {
   if (input) input.value = "";
   if (box) box.innerHTML = "";
 });
+
+
+// ==========================================
+// INSTALL PWA
+// ==========================================
+
+let deferredPrompt;
+const installAppBtn = document.getElementById("installAppBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  if (installAppBtn) {
+    installAppBtn.style.display = "block";
+  }
+});
+
+if (installAppBtn) {
+  installAppBtn.addEventListener("click", async () => {
+
+    if (!deferredPrompt) {
+      alert("TokSnap sudah terpasang atau belum tersedia untuk di-install.");
+      return;
+    }
+
+    deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    console.log("Install result:", outcome);
+
+    deferredPrompt = null;
+  });
+}
+
+window.addEventListener("appinstalled", () => {
+  deferredPrompt = null;
+
+  if (installAppBtn) {
+    installAppBtn.textContent = "✓ TokSnap Terpasang";
+  }
+});
