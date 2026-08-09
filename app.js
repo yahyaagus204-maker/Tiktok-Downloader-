@@ -23,7 +23,10 @@ async function preview() {
   box.innerHTML = "⚡ Loading...";
 
   try {
-    const res = await fetch(`${BASE_URL}/info?url=${encodeURIComponent(url)}`);
+    const res = await fetch(
+      `${BASE_URL}/info?url=${encodeURIComponent(url)}`
+    );
+
     const data = await res.json();
 
     if (data.error) {
@@ -31,90 +34,145 @@ async function preview() {
       return;
     }
 
-    // SLIDESHOW
+    // ==========================================
+    // 1 FOTO
+    // ==========================================
+    if (data.images && data.images.length === 1) {
+
+      box.innerHTML = `
+        <div class="previewCard">
+
+          <div class="slideHeader">
+            <h3>${data.title}</h3>
+            <p>${data.author}</p>
+          </div>
+
+          <div class="singleImageWrapper">
+            <img
+              src="${data.images[0]}"
+              class="singleImage"
+            >
+          </div>
+
+        </div>
+      `;
+
+      return;
+    }
+
+
+    // ==========================================
+    // SLIDESHOW / MULTIPLE FOTO
+    // ==========================================
     if (data.images && data.images.length > 1) {
 
-  box.innerHTML = `
-    <div class="previewCard">
+      box.innerHTML = `
+        <div class="previewCard">
 
-      <div class="slideHeader">
-        <h3>${data.title}</h3>
-        <p>${data.author}</p>
-      </div>
+          <div class="slideHeader">
+            <h3>${data.title}</h3>
+            <p>${data.author}</p>
+          </div>
 
-      <div class="galleryWrapper">
+          <div class="galleryWrapper">
 
-        <div class="gallery" id="gallery">
+            <div class="gallery" id="gallery">
 
-          ${data.images.map((img, index) => `
+              ${data.images.map((img, index) => `
 
-            <div class="slideItem">
+                <div class="slideItem">
 
-              <img
-                src="${img}"
-                class="slideImage"
-              >
+                  <img
+                    src="${img}"
+                    class="slideImage"
+                  >
 
-              <button
-                class="downloadImageBtn"
-                onclick="downloadImage('${img}', ${index})"
-              >
-                ⬇ Download HD
-              </button>
+                  <button
+                    class="downloadImageBtn"
+                    onclick="downloadImage('${img}', ${index})"
+                  >
+                    ⬇ Download HD
+                  </button>
+
+                </div>
+
+              `).join("")}
 
             </div>
 
-          `).join("")}
+          </div>
 
-        </div>
+          <div class="dots">
 
-      </div>
+            ${data.images.map((_, i) => `
+              <div class="dot ${i === 0 ? 'activeDot' : ''}"></div>
+            `).join("")}
 
-      <div class="dots">
-        ${data.images.map((_, i) => `
-          <div class="dot ${i === 0 ? 'activeDot' : ''}"></div>
-        `).join("")}
-      </div>
+          </div>
 
-      <p class="slideHint">
-        👉 Swipe kiri kanan
-      </p>
+          <p class="slideHint">
+            👉 Swipe kiri kanan
+          </p>
 
-    </div>
-  `;
-
-  initSlider();
-}
-
-    // VIDEO
-    else {
-      box.innerHTML = `
-        <div class="previewCard">
-          <img src="${data.thumbnail}">
-          <h3>${data.title}</h3>
-          <p>${data.author}</p>
         </div>
       `;
+
+      initSlider();
+      return;
     }
 
+
+    // ==========================================
+    // VIDEO
+    // ==========================================
+    box.innerHTML = `
+      <div class="previewCard">
+
+        <img src="${data.thumbnail}">
+
+        <h3>${data.title}</h3>
+
+        <p>${data.author}</p>
+
+      </div>
+    `;
+
   } catch (e) {
+
+    console.error(e);
+
     box.innerHTML = "❌ Preview gagal";
+
   }
 }
 
+
+// ==========================================
 // AUTO PREVIEW
+// ==========================================
+
 const input = document.getElementById("url");
 
 let t;
+
 input.addEventListener("input", () => {
+
   clearTimeout(t);
+
   t = setTimeout(() => {
+
     if (input.value.includes("tiktok")) {
       preview();
     }
+
   }, 800);
+
 });
 
+
+// ==========================================
+// DOWNLOAD IMAGE
+// ==========================================
 
 async function downloadImage(url, index) {
 
@@ -145,7 +203,13 @@ async function downloadImage(url, index) {
     alert("Gagal download gambar");
 
   }
+
 }
+
+
+// ==========================================
+// SLIDER
+// ==========================================
 
 function initSlider() {
 
@@ -153,13 +217,17 @@ function initSlider() {
 
   const dots = document.querySelectorAll(".dot");
 
+  if (!gallery) return;
+
   gallery.addEventListener("scroll", () => {
 
     const index = Math.round(
       gallery.scrollLeft / gallery.offsetWidth
     );
 
-    dots.forEach(dot => dot.classList.remove("activeDot"));
+    dots.forEach(dot =>
+      dot.classList.remove("activeDot")
+    );
 
     if (dots[index]) {
       dots[index].classList.add("activeDot");
@@ -167,4 +235,4 @@ function initSlider() {
 
   });
 
-}
+              }
