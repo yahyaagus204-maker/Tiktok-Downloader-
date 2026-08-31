@@ -61,14 +61,22 @@ app.get("/download", (req, res) => {
     cmd = `yt-dlp -f "best[ext=mp4]" -o "${fileName}" "${url}"`;
   }
 
-  exec(cmd, (err) => {
-    if (err) {
-      return res.json({ error: "Download gagal (yt-dlp error)" });
-    }
+  exec(cmd, (err, stdout, stderr) => {
+  if (err) {
+    console.log("=== YT-DLP ERROR ===");
+    console.log(stderr);
+    console.log("====================");
 
-    res.download(fileName, () => {
-      fs.unlinkSync(fileName);
+    return res.json({
+      error: "Download gagal",
+      detail: stderr
     });
+  }
+
+  res.download(fileName, () => {
+    if (fs.existsSync(fileName)) {
+      fs.unlinkSync(fileName);
+        };
   });
 });
 
